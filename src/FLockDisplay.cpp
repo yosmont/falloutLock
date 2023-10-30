@@ -6,6 +6,8 @@
 #include <ctime>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <iterator>
+#include <signal.h>
 
 #include <iostream>
 
@@ -79,6 +81,12 @@ void flock::FLockDisplay::Input(char c)
     RefreshInput();
 }
 
+void flock::FLockDisplay::Output(std::string str)
+{
+    _consoleBuff.WriteOutput(str);
+    RefreshInput();
+}
+
 std::string &flock::FLockDisplay::GetInput(void)
 {
     return _consoleBuff.GetCurrentInput();
@@ -89,13 +97,67 @@ int flock::FLockDisplay::SearchMatch(std::string str)
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     size_t pos{_dumpStr.find(str)};
     if (std::string::npos != pos) {
-        system(std::string{"notify-send found"}.c_str());
         for (int i{0}; str.size() > i; ++i)
             _dumpStr[pos + i] = '_';
         RefreshDump();
-        return 1;
-    } else
+        auto it = std::find(_wordList.begin(), _wordList.end(), str);
+        if (_wordList.end() == it)
+            return -2;
+        int id = std::distance(_wordList.begin(), it);
+        if (id == _psswrdID) {
+            _consoleBuff.WriteOutput("correct");
+            RefreshInput();
+            kill(getpid(), SIGINT);
+            return -3;
+        }
+        --_lifeCounter;
+        RefreshLife();
+        if (!_lifeCounter) {
+            _consoleBuff.WriteOutput("incorrect");
+            RefreshInput();
+            kill(getpid(), SIGINT);
+            return -4;
+        }
+        _out.push_back(id);
+        int matchCounter{0};
+        for (int i{0}; _wordList[_psswrdID].size() > i; ++i)
+            if ((_wordList[_psswrdID])[i] == (_wordList[id])[i])
+                ++matchCounter;
+        _consoleBuff.WriteOutput(std::to_string(matchCounter) + "/" + std::to_string(_wordList[_psswrdID].size()) + " correct");
+        RefreshInput();
+        return matchCounter;
+    } else {
+        _consoleBuff.WriteOutput("Input Error");
+        RefreshInput();
         return -1;
+    }
+}
+
+void flock::FLockDisplay::Bonus(void)
+{
+    BonusOption opt{(BonusOption)((int)(std::rand() % BonusOption::TOTAL))};
+    int id{std::rand() % (int)(_wordList.size())};
+    switch (opt) {
+        case LIFERESET:
+            _lifeCounter = LIFEMAX;
+            RefreshLife();
+            _consoleBuff.WriteOutput("reset");
+            RefreshInput();
+            return;
+        case REMOVEDUD:
+            while (id == _psswrdID || _out.end() != std::find(_out.begin(), _out.end(), id))
+                id = std::rand() % _wordList.size();
+            SearchMatch(_wordList[id]);
+            _consoleBuff.WriteOutput("dud removed");
+            RefreshInput();
+            return;
+        case NONE:
+        case TOTAL:
+        default:
+            _consoleBuff.WriteOutput("N/A");
+            RefreshInput();
+            return;
+    }
 }
 
 std::string flock::FLockDisplay::GenDumpLine(const int &startID)

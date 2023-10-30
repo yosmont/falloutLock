@@ -41,6 +41,24 @@ bool flock::FLock::IsBonusStr(std::string toCheck)
 void flock::FLock::ProcessTry(void)
 {
     std::string &currentInput{_display->GetInput()};
-    _display->SearchMatch(currentInput);
-    //if (IsBonusStr(currentInput)) {}
+    bool valid{false};
+    switch (isalpha(currentInput.front())) {
+        case 0:
+            if (IsBonusStr(currentInput))
+                valid = true;
+            break;
+        default:
+            for (char elem : currentInput)
+                if (!isalpha(elem))
+                    break;
+            valid = true;
+            break;
+    }
+    if (valid) {
+        _display->SearchMatch(currentInput);
+        if (IsBonusStr(currentInput))
+            _display->Bonus();
+    } else {
+        _display->Output("Input Error");
+    }
 }

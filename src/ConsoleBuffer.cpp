@@ -43,7 +43,7 @@ void flock::ConsoleBuffer::NewLine(bool isStartInput)
 void flock::ConsoleBuffer::AddText(std::string txt)
 {
     for (size_t i{0}; txt.size() > i; ++i) {
-        if (_w <= _buff.back().size())
+        if (_w <= (int)(_buff.back().size()))
             NewLine();
         _buff.back() += txt[i];
     }

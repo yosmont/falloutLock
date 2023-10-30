@@ -33,7 +33,7 @@ flock::FLockDisplay::FLockDisplay(const std::vector<std::string> wordList) :
 {
     int dumpSize{(int)(((_dInfo.dumpColsSize * _dInfo.dumpLinesSize * _dInfo.colsNb) - (_wordList[0].length() * _wordList.size())) + _wordList.size())};
     std::vector<int> wordID{};
-    for (int i{0}; _wordList.size() > i; ++i) {
+    for (size_t i{0}; _wordList.size() > i; ++i) {
         int rng{std::rand() % dumpSize};
         while (std::find(wordID.begin(), wordID.end(), rng) != wordID.end())
             rng = std::rand() % dumpSize;
@@ -64,7 +64,7 @@ flock::FLockDisplay::FLockDisplay(const std::vector<std::string> wordList) :
         << dumpSize << std::endl;
     //std::cout << _dumpStr << std::endl;
 
-    for (int id{0}; _dumpStr.size() > id; id += _dInfo.dumpColsSize) {
+    for (size_t id{0}; _dumpStr.size() > id; id += _dInfo.dumpColsSize) {
         std::cout << GenDumpLine(id) << " ";
         id += _dInfo.dumpColsSize;
         std::cout << GenDumpLine(id)
@@ -97,7 +97,7 @@ int flock::FLockDisplay::SearchMatch(std::string str)
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     size_t pos{_dumpStr.find(str)};
     if (std::string::npos != pos) {
-        for (int i{0}; str.size() > i; ++i)
+        for (size_t i{0}; str.size() > i; ++i)
             _dumpStr[pos + i] = '_';
         RefreshDump();
         auto it = std::find(_wordList.begin(), _wordList.end(), str);
@@ -120,7 +120,7 @@ int flock::FLockDisplay::SearchMatch(std::string str)
         }
         _out.push_back(id);
         int matchCounter{0};
-        for (int i{0}; _wordList[_psswrdID].size() > i; ++i)
+        for (size_t i{0}; _wordList[_psswrdID].size() > i; ++i)
             if ((_wordList[_psswrdID])[i] == (_wordList[id])[i])
                 ++matchCounter;
         _consoleBuff.WriteOutput(std::to_string(matchCounter) + "/" + std::to_string(_wordList[_psswrdID].size()) + " correct");

@@ -1,5 +1,6 @@
 #include "FLock.hpp"
 #include <signal.h>
+#include "RandomWordAPI.hpp"
 
 #if 0
 #include <libnotify/notify.h>
@@ -18,8 +19,8 @@ flock::FLock::FLock(void)
 {
     signal(SIGINT, &SignalCallback);
     signal(SIGTERM, &SignalCallback);
-    std::vector<std::string> v{"hello", "world", "words", "worms", "hacks", "babel", "eagle", "early", "fable", "nacho", "oasis", "yacks", "zakat", "cable", "babka", "babas", "abaca", "aalii", "aargh", "daals", "dados", "faces", "facet", "facia", "gadid", "gabby", "haafs", "haars", "habit", "hadal", "hacek", "icily", "jacks", "jabot"};
-    _display.reset(new FLockDisplay{v});
+    //std::vector<std::string> v{"hello", "world", "words", "worms", "hacks", "babel", "eagle", "early", "fable", "nacho", "oasis", "yacks", "zakat", "cable", "babka", "babas", "abaca", "aalii", "aargh", "daals", "dados", "faces", "facet", "facia", "gadid", "gabby", "haafs", "haars", "habit", "hadal", "hacek", "icily", "jacks", "jabot"};
+    _display.reset(new FLockDisplay{rwapi::RandomWordAPI::GetWordList(10, 5)});
 }
 
 void flock::FLock::GameLoop(void)

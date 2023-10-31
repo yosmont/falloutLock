@@ -7,5 +7,10 @@ std::vector<std::string> rwapi::RandomWordAPI::GetWordList(const int &number, co
 {
     cpr::Response r = cpr::Get(cpr::Url{BASEURL + "?lang=" + lang + "&number=" + std::to_string(number) + "&length=" + std::to_string(length)});
     std::cout << r.text << std::endl;
-    return std::vector<std::string>{};
+    nlohmann::json json{r.text};
+    std::vector<std::string> ret{};
+    for (auto elem : json) {
+        ret.push_back(elem.get<std::string>());
+    }
+    return ret;
 }

@@ -15,12 +15,12 @@ void SignalCallback(int s)
     quit.store(true);
 }
 
-flock::FLock::FLock(void)
+flock::FLock::FLock(int number, int length)
 {
     signal(SIGINT, &SignalCallback);
     signal(SIGTERM, &SignalCallback);
     //std::vector<std::string> v{"hello", "world", "words", "worms", "hacks", "babel", "eagle", "early", "fable", "nacho", "oasis", "yacks", "zakat", "cable", "babka", "babas", "abaca", "aalii", "aargh", "daals", "dados", "faces", "facet", "facia", "gadid", "gabby", "haafs", "haars", "habit", "hadal", "hacek", "icily", "jacks", "jabot"};
-    _display.reset(new FLockDisplay{rwapi::RandomWordAPI::GetWordList(10, 5)});
+    _display.reset(new FLockDisplay{rwapi::RandomWordAPI::GetWordList(number, length)});
 }
 
 void flock::FLock::GameLoop(void)

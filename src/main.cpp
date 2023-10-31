@@ -3,14 +3,17 @@
 #include "FLock.hpp"
 #include "RandomWordAPI.hpp"
 
-int main(void){
+int main(int ac, char **av, char **env)
+{
+  (void)env;
   std::srand(std::time(nullptr));
-#if 1
-  rwapi::RandomWordAPI::GetWordList(10, 5);
-  exit(0);
-#endif
   initscr();
-  flock::FLock fl{};
-  fl.GameLoop();
+  if (ac == 3) {
+    flock::FLock fl{std::stoi(std::string{av[1]}), std::stoi(std::string{av[2]})};
+    fl.GameLoop();
+  } else {
+    flock::FLock fl{};
+    fl.GameLoop();
+  }
   endwin();
 }

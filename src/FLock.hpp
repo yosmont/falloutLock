@@ -9,7 +9,7 @@
 namespace flock {
     class FLock {
         public:
-            FLock(void);
+            FLock(int number = 100, int length = 8);
             void GameLoop(void);
         private:
             bool IsBonusStr(std::string toCheck);

@@ -1,20 +1,29 @@
 #include "RandomWordAPI.hpp"
 #include "nlohmann/json.hpp"
-#include <cpr/cpr.h>
 #include <iostream>
 
 std::vector<std::string> rwapi::RandomWordAPI::GetWordList(const int &number, const int &length, const std::string &lang)
 {
-    cpr::Response r = cpr::Get(
-        cpr::Url{BASEURL + "?lang=" + lang + "&number=" + std::to_string(number) + "&length=" + std::to_string(length)},
-        cpr::Authentication{"user", "pass", cpr::AuthMode::BASIC},
-        cpr::Parameters{}
-    );
-    std::cout << r.status_code << " - " << r.text << std::endl;
-    nlohmann::json json{r.text};
+    std::array<char, 128> buff{};
+    std::string cli{"curl \"" + BASEURL + "?lang=" + lang + "&number=" + std::to_string(number) + "&length=" + std::to_string(length) + "\""};
+    std::unique_ptr<FILE, decltype(&pclose)> pipe{popen(cli.c_str(), "r"), pclose};
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    std::string cliRet{};
+    while (nullptr != fgets(buff.data(), buff.size(), pipe.get())) {
+        cliRet += buff.data();
+    }
     std::vector<std::string> ret{};
-    for (auto elem : json) {
-        ret.push_back(elem.get<std::string>());
+    for (int i{0}; number > i; ++i) {
+        std::string currentWord{};
+        for (int j{0}; length > j; ++j) {
+            int pos{2 + ((length + 3) * i) + j};
+            if (cliRet.size() <= (size_t)pos)
+                return ret;
+            currentWord += cliRet[pos];
+        }
+        ret.push_back(currentWord);
     }
     return ret;
 }

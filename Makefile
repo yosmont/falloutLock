@@ -6,8 +6,7 @@
 
 NAME	=	flock
 
-SRC	=	submodules/urdl/src/urdl.cpp	\
-		src/RandomWordAPI.cpp			\
+SRC	=	src/RandomWordAPI.cpp			\
 		src/ConsoleBuffer.cpp			\
 		src/FLockDisplay.cpp			\
 		src/FLock.cpp					\

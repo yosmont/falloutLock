@@ -6,12 +6,14 @@
 
 NAME	=	flock
 
-SRC	=	src/ConsoleBuffer.cpp	\
-		src/FLockDisplay.cpp	\
-		src/FLock.cpp			\
+SRC	=	submodules/urdl/src/urdl.cpp	\
+		src/RandomWordAPI.cpp			\
+		src/ConsoleBuffer.cpp			\
+		src/FLockDisplay.cpp			\
+		src/FLock.cpp					\
 		src/main.cpp
 
-CFLAGS	+=	-lncurses -Wall -Wextra -I"src/"
+CFLAGS	+=	-lncurses -Wall -Wextra -I"src/" -I"submodules/urdl/include/" -I"submodules/json/single_include/"
 
 DFLAG	+=	-g
 

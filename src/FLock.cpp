@@ -5,17 +5,26 @@
 #include <libnotify/notify.h>
 #endif
 
+
+std::atomic_bool quit{false};
+
+void SignalCallback(int s)
+{
+    (void)s;
+    quit.store(true);
+}
+
 flock::FLock::FLock(void)
 {
-    signal(SIGINT, _signalFToC.Get());
-    signal(SIGTERM, _signalFToC.Get());
+    signal(SIGINT, &SignalCallback);
+    signal(SIGTERM, &SignalCallback);
     std::vector<std::string> v{"hello", "world", "words", "worms", "hacks", "babel", "eagle", "early", "fable", "nacho", "oasis", "yacks", "zakat", "cable", "babka", "babas", "abaca", "aalii", "aargh", "daals", "dados", "faces", "facet", "facia", "gadid", "gabby", "haafs", "haars", "habit", "hadal", "hacek", "icily", "jacks", "jabot"};
     _display.reset(new FLockDisplay{v});
 }
 
 void flock::FLock::GameLoop(void)
 {
-    for (int input{getch()}; !_quit.load(); input = getch()) {
+    for (int input{getch()}; !quit.load(); input = getch()) {
         switch (input) {
             case 10:
                 ProcessTry();

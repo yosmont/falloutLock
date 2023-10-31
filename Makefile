@@ -12,7 +12,7 @@ SRC	=	src/RandomWordAPI.cpp			\
 		src/FLock.cpp					\
 		src/main.cpp
 
-CFLAGS	+=	-lncurses -Wall -Wextra -I"src/" -I"submodules/urdl/include/" -I"submodules/json/single_include/"
+CFLAGS	+=	-lncurses -Wall -Wextra -I"src/"
 
 DFLAG	+=	-g
 

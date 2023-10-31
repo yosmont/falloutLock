@@ -7,5 +7,5 @@ the hacking system of fallout redone with ncurses
 ## usage
 `./flock [NUMBER_OF_WORD] [WORD_LENGTH]`\
 by default:
-    - NUMBER_OF_WORD = 100
-    - WORD_LENGTH = 8
+ - NUMBER_OF_WORD = 100
+ - WORD_LENGTH = 8

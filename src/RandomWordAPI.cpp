@@ -1,6 +1,6 @@
 #include "RandomWordAPI.hpp"
-#include "nlohmann/json.hpp"
 #include <iostream>
+#include <memory>
 
 std::vector<std::string> rwapi::RandomWordAPI::GetWordList(const int &number, const int &length, const std::string &lang)
 {
